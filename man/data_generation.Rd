@@ -6,22 +6,18 @@
 \usage{
 data_generation(
   n = 200,
-  alpha12 = 2.5,
-  beta12 = 2,
-  alpha13 = 5,
-  beta13 = 2.5,
-  lambda23 = 1,
-  k23 = 2,
-  lambda04 = 4,
-  k04 = 2,
-  a14 = 1,
-  b14 = 4,
-  tau = 0.3,
+  alpha12 = 3,
+  beta12 = 4,
+  alpha13 = 3.5,
+  beta13 = 3,
+  lambda23 = 2.5,
+  k23 = 1.5,
+  lambda04 = 7,
+  k04 = 4,
+  a14 = 3,
+  b14 = 8,
   p = 0.7,
-  Pg_mb = 0.3,
-  Pg_mc = 0.2,
-  C_max = 10,
-  tau_0 = 2
+  C_max = 10
 )
 }
 \arguments{
@@ -47,17 +43,9 @@ data_generation(
 
 \item{b14}{Uniform upper limit; 1->4 transition with non cured proportion.}
 
-\item{tau}{Pre-specified upper threshold value for cured individual.}
-
 \item{p}{Probability of not-being cured.}
 
-\item{Pg_mb}{Probability of masked given that it was 1->3 transition.}
-
-\item{Pg_mc}{Probability of masked given that it was 1->4 transition.}
-
 \item{C_max}{Maximum value of censoring time.}
-
-\item{tau_0}{Pre-specified lower threshold value for not being cured individual.}
 }
 \value{
 Data frame
@@ -67,8 +55,12 @@ Data Generation Function for a Illness-Death model with Masked Causes
 }
 \examples{
 require(dplyr)
-Data_temp = data_generation(n=200, alpha12=2.5, beta12=2, alpha13=5, beta13=2.5, lambda23=1, k23=2, lambda04=10, k04=4, a14=4, b14=2, tau=0.3, p=0.7, Pg_mb=0.3, Pg_mc=0.2, C_max=10, tau_0=2)
+Data_temp = data_generation(a14=2,b14=6)
 head(Data_temp)
-
-
+Data_temp \%>\% select(t1, t2) \%>\% filter(status12==1)
+Data_temp \%>\% select(t1, t2) \%>\% filter(status13==1)
+Data_temp \%>\% select(t1, t2) \%>\% filter(status14==1)
+Data_temp \%>\% select(t1, t2) \%>\% filter(status12==1)\%>\%summarise(n=n(), mean(t1), min(t1), max(t1))
+Data_temp \%>\% select(t1, t2) \%>\% filter(status13==1)\%>\%summarise(n=n(), mean(t1), min(t1), max(t1))
+Data_temp \%>\% select(t1, t2) \%>\% filter(status14==1)\%>\%summarise(n=n(), mean(t1), min(t1), max(t1))
 }

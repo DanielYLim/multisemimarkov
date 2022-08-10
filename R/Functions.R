@@ -50,9 +50,33 @@ hazardWei = function(k, lambda, t){
 #' @examples
 #' hazardUnif(1,4,2)
 hazardUnif = function(a14, b14, t){
-  out = ((t-a14)*(b14-a14)-(t-a14)**2)/( b14-a14 )**2
+  out = dunif(t, a14, b14)*(1-punif(t, a14, b14))
   return(out)
 }
+
+
+
+#' Cumulative Uniform Hazard
+#'
+#' @param a14
+#' @param b14
+#' @param t
+#'
+#' @return cumulative hazard function of uniform distribution
+#' @export
+#'
+#' @examples
+#' Cum_hazardUnif(1,4,2)
+#' Cum_hazardUnif(1,4,0)  # outside of range gives 0
+#' Cum_hazardUnif(1,4,5)  # outside of range gives 0
+Cum_hazardUnif = function(a14, b14, t){
+  if ((a14<t)&(t<b14)){
+  out = log(dunif(t, a14, b14)*(1-punif(t, a14, b14)) )
+  } else{
+    out = 0 }
+  return(out)
+}
+
 
 
 
@@ -76,28 +100,26 @@ hazardUnif = function(a14, b14, t){
 #' @param k04 Weibull shape parameter; 0->4 transition.
 #' @param a14 Uniform lower limit; 1->4 transition with non cured proportion.
 #' @param b14 Uniform upper limit; 1->4 transition with non cured proportion.
-#' @param tau Pre-specified upper threshold value for cured individual.
 #' @param p Probability of not-being cured.
-#' @param Pg_mb Probability of masked given that it was 1->3 transition.
-#' @param Pg_mc Probability of masked given that it was 1->4 transition.
 #' @param C_max Maximum value of censoring time.
-#' @param tau_0 Pre-specified lower threshold value for not being cured individual.
-#'
 #' @return Data frame
 #' @export
 #'
 #' @examples
 #' require(dplyr)
-#' Data_temp = data_generation(n=200, alpha12=2.5, beta12=2, alpha13=5, beta13=2.5, lambda23=1, k23=2, lambda04=10, k04=4, a14=4, b14=2, tau=0.3, p=0.7, Pg_mb=0.3, Pg_mc=0.2, C_max=10, tau_0=2)
+#' Data_temp = data_generation(a14=2,b14=6)
 #' head(Data_temp)
-#'
-#'
-
-data_generation = function(n=200, alpha12=2.5, beta12=2, alpha13=5, beta13=2.5, lambda23=1, k23=2, lambda04=4, k04=2, a14=1, b14=4, tau=0.3, p=0.7, Pg_mb=0.3, Pg_mc=0.2, C_max=10, tau_0=2){
+#' Data_temp %>% select(t1, t2) %>% filter(status12==1)
+#' Data_temp %>% select(t1, t2) %>% filter(status13==1)
+#' Data_temp %>% select(t1, t2) %>% filter(status14==1)
+#' Data_temp %>% select(t1, t2) %>% filter(status12==1)%>%summarise(n=n(), mean(t1), min(t1), max(t1))
+#' Data_temp %>% select(t1, t2) %>% filter(status13==1)%>%summarise(n=n(), mean(t1), min(t1), max(t1))
+#' Data_temp %>% select(t1, t2) %>% filter(status14==1)%>%summarise(n=n(), mean(t1), min(t1), max(t1))
+data_generation = function(n=200, alpha12=3, beta12=4, alpha13=3.5, beta13=3, lambda23=2.5, k23=1.5, lambda04=7, k04=4, a14=3, b14=8, p=0.7, C_max=10){
 
 
   gett<-function(t){
-    Sol<-log(1-u)+log(1+(t/alpha12)^(beta12))+log(1+(t/alpha13)^(beta13))+log( ((t-a14)*(b14-a14)-(t-a14)**2)/( b14-a14 )**2   )
+    Sol<-log(1-u)+log(1+(t/alpha12)^(beta12))+log(1+(t/alpha13)^(beta13))+ Cum_hazardUnif(a14, b14, t)
     return(Sol)
   }
 
@@ -135,6 +157,7 @@ data_generation = function(n=200, alpha12=2.5, beta12=2, alpha13=5, beta13=2.5, 
       pi1<-hazardLL(alpha12,beta12,t)/(hazardLL(alpha12,beta12,t)+hazardLL(alpha13,beta13,t)+hazardUnif(a14, b14, t)) 	 ## prob of having t with 1->2
       pi2<-hazardLL(alpha13,beta13,t)/(hazardLL(alpha12,beta12,t)+hazardLL(alpha13,beta13,t)+hazardUnif(a14, b14, t))  	## prob of having t with 1->3
       pi3 = 1-(pi1+pi2)
+      if (pi3<0){pi3=0}
       prob = c(pi1, pi2, pi3)
 
       S<-rmultinom(1,1,prob)
@@ -241,94 +264,8 @@ data_generation = function(n=200, alpha12=2.5, beta12=2, alpha13=5, beta13=2.5, 
   t2<-x23
 
 
-  # status_c = status12+status13
-  # status_c = (status_c==0)
 
-  gamma_gm<-rep(0,n)
-
-
-  ### Missing Data Generation
-  status_a<- status12
-  status_b<- status13
-  status_c<- status14+status04
-
-
-  Index<-which(status_c==1)
-
-  temp_num1=0
-  temp_num2=0
-  for (i in 1:length(Index)){
-    NUM<-rbinom(1,1,Pg_mc)
-    if (NUM==1){
-      status_b[Index[i]]=-1
-      status_c[Index[i]]=-1
-      temp_num1=temp_num1+1
-    }
-  }
-
-  Index<-which(status13 == 1)
-
-  for (i in 1:length(Index)){
-    NUM<-rbinom(1,1,Pg_mb)
-    if (NUM==1){
-      status_b[Index[i]]=-1
-      status_c[Index[i]]=-1
-      temp_num2=temp_num2+1
-    }
-  }
-
-  NUM<-which(status_b == -1)
-  gamma_gm[NUM]=1
-
-  NUM<-which(status_c == -1)
-  gamma_gm[NUM]=1
-
-
-
-
-
-  #### Data imputation procedure
-  #### about 50 % come back (e.g.)
-
-  ########## Missing Data is generated
-
-  status13new<-status_b
-  status13new[status13new==-1]<-0
-  status1new<-status12+status13new
-
-  tau_1=max(t1[which(status1new==1)]) ### point
-
-  # tau_0 = 2
-
-
-
-
-
-  ## Assign the missing indicator to the cured to death comparing with the cutoff point
-  temp4 = 0
-  ### Imputation 1
-  Number<-which(status_c==-1)
-  Number2<-t1[Number]>tau_1
-  Number3<-which(Number2==TRUE)
-  Number4<-Number[Number3]
-  temp4=length(Number4)
-
-  status_c[Number4]<-1
-  status_b[Number4]<-0
-
-
-  ### Imputation 2
-  Number<-which(status_b==-1)
-  Number2<-t1[Number]<tau_0
-  Number3<-which(Number2==TRUE)
-  Number4<-Number[Number3]
-  temp5=length(Number4)
-
-  status_b[Number4]<-1
-  status_c[Number4]<-0
-
-
-  Data = data.frame(t1, t2, C, status_a, status_b, status_c, status12, status23, status13, status14, status04, gamma_gm)
+  Data = data.frame(t1, t2, C, status12, status23, status13, status14, status04)
 
   ### Order the data by t1
   Data <-Data[order(Data$t1),]
