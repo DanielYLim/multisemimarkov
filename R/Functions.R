@@ -50,7 +50,7 @@ hazardWei = function(k, lambda, t){
 #' @examples
 #' hazardUnif(1,4,2)
 hazardUnif = function(a14, b14, t){
-  out = ((t-a)*(b14-a14)-(t-a14)**2)/( b14-a14 )**2
+  out = ((t-a14)*(b14-a14)-(t-a14)**2)/( b14-a14 )**2
   return(out)
 }
 
@@ -97,7 +97,7 @@ data_generation = function(n=200, alpha12=2.5, beta12=2, alpha13=5, beta13=2.5, 
 
 
   gett<-function(t){
-    Sol<-log(1-u)+log(1+(t/alpha12)^(beta12))+log(1+(t/alpha13)^(beta13))+log( ((t-a)*(b14-a14)-(t-a14)**2)/( b14-a14 )**2   )
+    Sol<-log(1-u)+log(1+(t/alpha12)^(beta12))+log(1+(t/alpha13)^(beta13))+log( ((t-a14)*(b14-a14)-(t-a14)**2)/( b14-a14 )**2   )
     return(Sol)
   }
 

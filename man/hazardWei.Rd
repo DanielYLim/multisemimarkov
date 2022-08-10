@@ -7,14 +7,14 @@
 hazardWei(k, lambda, t)
 }
 \arguments{
-\item{k}{is a shape parameter.}
+\item{k}{a shape parameter.}
 
-\item{lambda}{is a scale parameter.}
+\item{lambda}{a scale parameter.}
 
-\item{t}{is time to event where t>0.}
+\item{t}{time to event where t>0.}
 }
 \value{
-haaard function of t.
+hazard function of t.
 }
 \description{
 Weibull hazard function

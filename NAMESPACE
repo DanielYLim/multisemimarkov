@@ -2,5 +2,6 @@
 
 export(data_generation)
 export(hazardLL)
+export(hazardUnif)
 export(hazardWei)
 export(hello)

@@ -7,11 +7,11 @@
 hazardLL(alpha1, beta1, t)
 }
 \arguments{
-\item{alpha1}{is a scale parameter.}
+\item{alpha1}{a scale parameter.}
 
-\item{beta1}{is a shape parameter.}
+\item{beta1}{a shape parameter.}
 
-\item{t}{is a time to event where t>0.}
+\item{t}{time to event where t>0.}
 }
 \value{
 hazard function of t with parameters alpha1 adn beta1.

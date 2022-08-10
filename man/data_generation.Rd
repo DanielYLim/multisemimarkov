@@ -12,10 +12,10 @@ data_generation(
   beta13 = 2.5,
   lambda23 = 1,
   k23 = 2,
-  lambda04 = 10,
-  k04 = 4,
-  lambda14 = 4,
-  k14 = 2,
+  lambda04 = 4,
+  k04 = 2,
+  a14 = 1,
+  b14 = 4,
   tau = 0.3,
   p = 0.7,
   Pg_mb = 0.3,
@@ -43,9 +43,9 @@ data_generation(
 
 \item{k04}{Weibull shape parameter; 0->4 transition.}
 
-\item{lambda14}{Weibull scale parameter; 1->4 transition.}
+\item{a14}{Uniform lower limit; 1->4 transition with non cured proportion.}
 
-\item{k14}{Weibull shape parameter; 1->4 transition.}
+\item{b14}{Uniform upper limit; 1->4 transition with non cured proportion.}
 
 \item{tau}{Pre-specified upper threshold value for cured individual.}
 
@@ -59,11 +59,15 @@ data_generation(
 
 \item{tau_0}{Pre-specified lower threshold value for not being cured individual.}
 }
+\value{
+Data frame
+}
 \description{
 Data Generation Function for a Illness-Death model with Masked Causes
 }
 \examples{
-Data_temp = data_generation(n=200, alpha12=2.5, beta12=2, alpha13=5, beta13=2.5, lambda23=1, k23=2, lambda04=10, k04=4, lambda14=4, k14=2, tau=0.3, p=0.7, Pg_mb=0.3, Pg_mc=0.2, C_max=10, tau_0=2)
+require(dplyr)
+Data_temp = data_generation(n=200, alpha12=2.5, beta12=2, alpha13=5, beta13=2.5, lambda23=1, k23=2, lambda04=10, k04=4, a14=4, b14=2, tau=0.3, p=0.7, Pg_mb=0.3, Pg_mc=0.2, C_max=10, tau_0=2)
 head(Data_temp)
 
 
