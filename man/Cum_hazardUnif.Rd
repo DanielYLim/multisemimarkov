@@ -7,7 +7,11 @@
 Cum_hazardUnif(a14, b14, t)
 }
 \arguments{
-\item{t}{}
+\item{a14}{minimum value}
+
+\item{b14}{maximum value}
+
+\item{t}{time to event t}
 }
 \value{
 cumulative hazard function of uniform distribution
