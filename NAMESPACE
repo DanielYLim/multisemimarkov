@@ -2,6 +2,7 @@
 
 export(CIF)
 export(Cum_hazardUnif)
+export(data_generation_ver1)
 export(data_generation_ver2)
 export(f10j)
 export(hazardLL)
