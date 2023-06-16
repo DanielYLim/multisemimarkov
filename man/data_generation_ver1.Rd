@@ -43,7 +43,9 @@ Title
 }
 \examples{
 require(dplyr)
-Data_temp = data_generation_ver1(n=1000)
+Data_temp <- data_generation_ver1(n = 1000)
 head(Data_temp)
-Data_temp \%>\% select(t1, t2, status12, status23, status13) \%>\% filter(status23==1)
+Data_temp \%>\%
+  select(t1, t2, status12, status23, status13) \%>\%
+  filter(status23 == 1)
 }
