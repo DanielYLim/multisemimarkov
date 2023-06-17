@@ -13,10 +13,10 @@
 #'
 #'
 #' @examples
-#' hazardLL(1,2,1.3)
+#' hazardLL(1, 2, 1.3)
 #' \dontrun{
-#' hazardLL(1,2,2.3)
+#' hazardLL(1, 2, 2.3)
 #' }
-hazardLL<-function(alpha1,beta1,t){
-  ((beta1/alpha1)*(t/alpha1)^(beta1-1))/(1+(t/alpha1)^beta1)
+hazardLL <- function(alpha1, beta1, t) {
+  ((beta1 / alpha1) * (t / alpha1)^(beta1 - 1)) / (1 + (t / alpha1)^beta1)
 }

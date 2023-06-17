@@ -21,7 +21,7 @@
 #' Data_temp %>%
 #'   select(t1, t2, status12, status23, status13) %>%
 #'   filter(status23 == 1)
-data_generation_ver1 <- function(n, alpha12 = 1, beta12 = 1, alpha13 = 2, beta13 = 2, lambda23 = 1, k23 = 2, tau = 0.2, p = 0.7, C_max = 10) {
+data_generation_ver1 <- function(n, alpha12 = 1, beta12 = 1, alpha13 = 2, beta13 = 2, alpha23 = 1, beta23 = 2, tau = 0.2, p = 0.7, C_max = 10, alpha04 = 7, beta04 = 4) {
   status12 <- rep(1, n)
   status23 <- rep(1, n)
   status13 <- rep(1, n)
@@ -29,6 +29,8 @@ data_generation_ver1 <- function(n, alpha12 = 1, beta12 = 1, alpha13 = 2, beta13
   x12 <- rep(0, n)
   x23 <- rep(0, n)
   x13 <- rep(0, n)
+  x04 <- rep(0,n)
+
 
 
   W <- rbinom(n, 1, p)
@@ -39,6 +41,8 @@ data_generation_ver1 <- function(n, alpha12 = 1, beta12 = 1, alpha13 = 2, beta13
   C <- runif(n, 0, 10)
   u1 <- runif(n, 0, 1)
   u4 <- runif(n, 0, 1)
+
+  x04 <- alpha04*(-log(1-u1))^(1/beta04)
 
   gett_ver1 <- function(t) {
     Sol <- log(1 - u) + log(1 + (t / alpha12)^(beta12)) + log(1 + (t / alpha13)^(beta13))
@@ -79,8 +83,9 @@ data_generation_ver1 <- function(n, alpha12 = 1, beta12 = 1, alpha13 = 2, beta13
   for (i in 1:n)
   {
     if (status12[i] == 1) {
-      u3 <- runif(1, min = 0, max = 1)
-      x23[i] <- sqrt(-log(1 - (1 - u1[i]**(-phi) * (1 - u3**(-phi / (1 + phi))))**(-1 / phi)))
+      u2 <- runif(1, min = 0, max = 1)
+      x23[i] = alpha12*(-log(1-(1-u1[i]**(-phi)*(1-u2**(-phi/(1+phi))))**(-1/phi)))**(1/beta23)
+      # x23[i] <- sqrt(-log(1 - (1 - u1[i]**(-phi) * (1 - u3**(-phi / (1 + phi))))**(-1 / phi)))
     } else if (status12[i] == 0) {
       status23[i] <- 0
       x23[i] <- 0
@@ -88,7 +93,11 @@ data_generation_ver1 <- function(n, alpha12 = 1, beta12 = 1, alpha13 = 2, beta13
   }
 
 
-
+  for (i in 1:n){
+    if (x04[i] <= C[i]){
+      C[i] = x04[i]
+    }
+  }
 
 
   for (i in 1:n) {
@@ -107,6 +116,8 @@ data_generation_ver1 <- function(n, alpha12 = 1, beta12 = 1, alpha13 = 2, beta13
       x23[i] <- C[i] - x12[i]
     }
   }
+
+
   t1 <- x12 + x13
   t2 <- x23
 

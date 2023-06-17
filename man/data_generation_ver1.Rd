@@ -10,11 +10,13 @@ data_generation_ver1(
   beta12 = 1,
   alpha13 = 2,
   beta13 = 2,
-  lambda23 = 1,
-  k23 = 2,
+  alpha23 = 1,
+  beta23 = 2,
   tau = 0.2,
   p = 0.7,
-  C_max = 10
+  C_max = 10,
+  alpha04 = 7,
+  beta04 = 4
 )
 }
 \arguments{
@@ -28,15 +30,15 @@ data_generation_ver1(
 
 \item{beta13}{log-logstic shape parameter; 1->3 transition.}
 
-\item{lambda23}{Weibull scale parameter; 2->3 transition.}
-
-\item{k23}{Weibull shape parameter; 2->3 transition.}
-
 \item{tau}{Kendall's tau; dependency measure}
 
 \item{p}{Probability of not-being cured.}
 
 \item{C_max}{Maximum value of censoring time.}
+
+\item{lambda23}{Weibull scale parameter; 2->3 transition.}
+
+\item{k23}{Weibull shape parameter; 2->3 transition.}
 }
 \description{
 Title

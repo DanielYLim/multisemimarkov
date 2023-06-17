@@ -24,8 +24,8 @@ Additional details...
  \deqn{h(t|alpha1, beta1) = ((beta1/alpha1)*(t/alpha1)^{beta1-1})/(1+(t/alpha1)^{beta1})}
 }
 \examples{
-hazardLL(1,2,1.3)
+hazardLL(1, 2, 1.3)
 \dontrun{
-hazardLL(1,2,2.3)
+hazardLL(1, 2, 2.3)
 }
 }
