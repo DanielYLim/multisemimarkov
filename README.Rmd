@@ -1,5 +1,18 @@
 ---
-output: github_document
+title: "multisemimarkov package"
+author: "Yongho Lim"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document: default
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{pgfplots}
+  - \usepackage{pgf,tikz,pgfplots}
+  - \pgfplotsset{compat=1.15}
+  - \usepackage{mathrsfs}
+  - \usetikzlibrary{arrows}
+  - \usetikzlibrary{patterns}
+  - \usetikzlibrary{positioning}
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -23,7 +36,7 @@ Provides functionality with Multistate semi-Markov model with masked causes
 
 ## Installation
 
-You can install the development version of multisemimarkov like so:
+You can install the development version of `multisemimarkov` like so:
 
 ``` r
 install.packages("multisemimarkov")
@@ -38,4 +51,42 @@ library(multisemimarkov)
 ## basic example code
 ```
 
+Multi-state model with partially latent cured and not cured states
 
+```{=tex}
+\centering
+\begin{tikzpicture}
+\node[draw, rectangle, rounded corners, text centered] (treatment) {Treatment (1)};
+\node[draw, rectangle, above right= 1.5 of treatment, rounded corners, text centered] (notcured) {Not Cured};
+\node[draw, rectangle, right=1.5 of notcured, rounded corners, text centered] (recurrence) {Recurrence (2)};
+\node[draw, rectangle, below=4 of recurrence, rounded corners, text centered] (cancerdeath) {Cancer Death (3)};
+\node[draw, rectangle,  below=4.1 of notcured, rounded corners, text centered] (cured) {Cured};
+\draw[->, line width= 1, dashed] (treatment) --  node[above,font=\scriptsize]{}(notcured);
+\draw[->, line width= 1, dashed] (treatment) --  node[above,font=\scriptsize]{}(cured);
+\draw [->, line width= 1] (notcured) -- node[above,font=\scriptsize]{}(recurrence);
+\draw [->, line width= 1] (recurrence) -- node[above,font=\scriptsize]{}(cancerdeath);
+\draw [->, line width= 1] (notcured) -- node[above,font=\scriptsize]{}(cancerdeath);
+\end{tikzpicture}
+```
+Multi-State Model Structure with Death Due to Other Causes State
+
+```{=tex}
+\centering
+\begin{tikzpicture}
+% nodes %
+\node[draw, rectangle, rounded corners, text centered] (treatment) {Treatment (1)};
+\node[draw, rectangle, above right= 1.5 of treatment, rounded corners, text centered] (notcured) {Not Cured};
+\node[draw, rectangle, right=1.5 of notcured, rounded corners, text centered] (recurrence) {Recurrence (2)};
+\node[draw, rectangle, below=2 of recurrence, rounded corners, text centered] (cancerdeath) {Cancer Death (3)};
+\node[draw, rectangle,  below=5 of notcured, rounded corners, text centered] (cured) {Cured};
+\node[draw, rectangle, right=0.6 of cured, rounded corners, text centered] (otherdeath) {Death due to Other Causes (4)};
+% edges %
+\draw[->, line width= 1, dashed] (treatment) --  node[above,font=\scriptsize]{}(notcured);
+\draw[->, line width= 1, dashed] (treatment) --  node[above,font=\scriptsize]{}(cured);
+\draw [->, line width= 1] (notcured) -- node[above,font=\scriptsize]{}(recurrence);
+\draw [->, line width= 1] (recurrence) -- node[above,font=\scriptsize]{}(cancerdeath);
+\draw [->, line width= 1] (notcured) -- node[above,font=\scriptsize]{}(cancerdeath);
+\draw [->, line width= 1, dashed] (notcured) -- node[above,font=\scriptsize]{}(otherdeath);
+\draw [->, line width= 1, dashed] (cured) -- node[above,font=\scriptsize]{}(otherdeath);
+\end{tikzpicture}
+```

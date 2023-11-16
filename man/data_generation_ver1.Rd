@@ -5,7 +5,7 @@
 \title{Title}
 \usage{
 data_generation_ver1(
-  n,
+  n = 400,
   alpha12 = 1,
   beta12 = 1,
   alpha13 = 2,

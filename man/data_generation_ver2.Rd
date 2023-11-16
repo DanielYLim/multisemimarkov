@@ -10,10 +10,10 @@ data_generation_ver2(
   beta12 = 4,
   alpha13 = 3.5,
   beta13 = 3,
-  lambda23 = 2.5,
-  k23 = 1.5,
-  lambda04 = 7,
-  k04 = 4,
+  alpha23 = 2.5,
+  beta23 = 1.5,
+  alpha04 = 7,
+  beta04 = 4,
   a14 = 3,
   b14 = 8,
   p = 0.7,
@@ -32,13 +32,13 @@ data_generation_ver2(
 
 \item{beta13}{log-logstic shape parameter; 1->3 transition.}
 
-\item{lambda23}{Weibull scale parameter; 2->3 transition.}
+\item{alpha23}{Weibull scale parameter; 2->3 transition.}
 
-\item{k23}{Weibull shape parameter; 2->3 transition.}
+\item{beta23}{Weibull shape parameter; 2->3 transition.}
 
-\item{lambda04}{Weibull scale parameter; 0->4 transition.}
+\item{alpha04}{Weibull scale parameter; 0->4 transition.}
 
-\item{k04}{Weibull shape parameter; 0->4 transition.}
+\item{beta04}{Weibull shape parameter; 0->4 transition.}
 
 \item{a14}{Uniform lower limit; 1->4 transition with non cured proportion.}
 
@@ -56,7 +56,7 @@ Data Generation Function for a Illness-Death model with Masked Causes
 }
 \examples{
 require(dplyr)
-Data_temp = data_generation_ver2(a14=2,b14=6)
+Data_temp = data_generation_ver2 (a14=2,b14=6)
 head(Data_temp)
 Data_temp \%>\% select(t1, t2, status12, status23, status13, status14) \%>\% filter(status12==1)
 Data_temp \%>\% select(t1, t2, status12, status23, status13, status14) \%>\% filter(status13==1)
@@ -64,4 +64,5 @@ Data_temp \%>\% select(t1, t2, status12, status23, status13, status14) \%>\% fil
 Data_temp \%>\% select(t1, t2, status12, status23, status13, status14) \%>\% filter(status12==1)\%>\%summarise(n=n(), mean(t1), min(t1), max(t1))
 Data_temp \%>\% select(t1, t2, status12, status23, status13, status14) \%>\% filter(status13==1)\%>\%summarise(n=n(), mean(t1), min(t1), max(t1))
 Data_temp \%>\% select(t1, t2, status12, status23, status13, status14) \%>\% filter(status14==1)\%>\%summarise(n=n(), mean(t1), min(t1), max(t1))
+Data_temp \%>\% filter(status_d==1)
 }

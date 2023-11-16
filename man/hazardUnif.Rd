@@ -11,7 +11,7 @@ hazardUnif(a14, b14, t)
 
 \item{b14}{upper limit of the distribution.}
 
-\item{t}{vector of quntiles.}
+\item{t}{vector of quantiles.}
 }
 \value{
 hazard function of uniform distribution.
