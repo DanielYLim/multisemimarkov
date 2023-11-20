@@ -1,4 +1,4 @@
-#' Title
+#' log-likelihood function without masked data
 #'
 #' @param p
 #'

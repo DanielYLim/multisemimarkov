@@ -2,7 +2,7 @@
 % Please edit documentation in R/log_like_func.R
 \name{log_like_func}
 \alias{log_like_func}
-\title{Title}
+\title{log-likelihood function without masked data}
 \usage{
 log_like_func(p)
 }
@@ -10,5 +10,5 @@ log_like_func(p)
 \item{p}{}
 }
 \description{
-Title
+log-likelihood function without masked data
 }

@@ -2,6 +2,8 @@
 
 export(CIF)
 export(Cum_hazardUnif)
+export(Estimation_unmasked)
+export(Simulation_unmasked)
 export(data_generation_ver1)
 export(data_generation_ver2)
 export(f10j)
