@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data_generation_ver1.R
 \name{data_generation_ver1}
 \alias{data_generation_ver1}
-\title{Title}
+\title{Generate Data without masked cases}
 \usage{
 data_generation_ver1(
   n = 400,
@@ -30,18 +30,26 @@ data_generation_ver1(
 
 \item{beta13}{log-logstic shape parameter; 1->3 transition.}
 
+\item{alpha23}{Weibull scale parameter; 2->3 transition.}
+
+\item{beta23}{Weibull shape parameter; 2->3 transition.}
+
 \item{tau}{Kendall's tau; dependency measure}
 
 \item{p}{Probability of not-being cured.}
 
 \item{C_max}{Maximum value of censoring time.}
 
-\item{lambda23}{Weibull scale parameter; 2->3 transition.}
+\item{alpha04}{Weibull scale parameter; cured -> 4 transition.}
 
-\item{k23}{Weibull shape parameter; 2->3 transition.}
+\item{beta04}{Weibull shape parameter; cured -> 4 transition.}
+}
+\value{
+A dataframe which contains generated data without masked data
 }
 \description{
-Title
+Data Generation Algorithm for Unmasked Data
+Random samples of \eqn{\{(t_{1i}, t_{2i}, \delta_{12i}, \delta_{13i}, \delta_{23i}), i = 1, 2, \dots, n\} } can be obtained.
 }
 \examples{
 require(dplyr)

@@ -4,7 +4,7 @@
 #' @param b14 upper limit of the distribution.
 #' @param t vector of quantiles.
 #'
-#' @return hazard function of uniform distribution.
+#' @return a value of hazard using uniform distribution.
 #' @export
 #'
 #' @examples
@@ -27,7 +27,7 @@ hazardUnif = function(a14, b14, t){
 #' @param b14 maximum value
 #' @param t time to event t
 #'
-#' @return cumulative hazard function of uniform distribution
+#' @return a value of cumulative hazard using uniform distribution
 #' @export
 #'
 #' @examples
@@ -56,7 +56,7 @@ Cum_hazardUnif = function(a14, b14, t){
 #' @param status13 indicator history of 1->3 transition
 #' @param status14 indicator history of 1->4 transition
 #'
-#' @return Estimated Cumulative Incidence Function
+#' @return A data frame contains estimated cumulative incidence function
 #' @export
 #'
 #' @examples
@@ -72,8 +72,6 @@ Cum_hazardUnif = function(a14, b14, t){
 #' status14 = Data_new$status14_new
 #' Data_results = CIF(Data$t1, status12, status13, status14)
 #' ggplot(data=Data_results)+geom_point(aes(t, CIF1))
-
-
 #' ### plot required...
 CIF<-function(time,status12,status13,status14)
 {
@@ -180,8 +178,8 @@ CIF<-function(time,status12,status13,status14)
 
 
 
-S10_fun = function(alpha12, beta12, alpha13, beta13, t){
-  result = exp( -log(1+(t/alpha12)^beta12) -log(1+(t/alpha13)^beta13)   )
+S10_fun = function(alphajk, betajk, alphajl, beta13, t){
+  result = exp( -log(1+(t/alphajk)^betajk) -log(1+(t/alphajl)^beta13)   )
   return(result)
 }
 
@@ -189,18 +187,19 @@ S10_fun = function(alpha12, beta12, alpha13, beta13, t){
 ###
 #' Title
 #'
-#' @param alphaj a scale parameter for transition 1->2.
-#' @param betaj a shape parameter for transition 1->2.
-#' @param alphak a scale parameter for transition 1->3.
-#' @param betak a shape parameter for transition 1->3.
+#' @param alphajk a scale parameter for transition j->k.
+#' @param betajk a shape parameter for transition j->2k.
+#' @param alphajl a scale parameter for transition j->l.
+#' @param betajl a shape parameter for transition j->l.
 #' @param t time to event where t>0.
 #'
-#' @return
+#' @return a value of hazard
 #' @export
 #'
-#' @examples f10j(1,2,1.3,2.3,5)
-f10j<-function(alphaj, betaj, alphak, betak,t){
-  ((betaj/alphaj)*(t/alphaj)^(betaj-1))/((1+(t/alphaj)^betaj)^2*(1+(t/alphak)^betak))
+#' @examples
+#' f10j(1,2,1.3,2.3,5)
+f10j<-function(alphajk, betajk, alphajl, betajl,t){
+  ((betajk/alphajk)*(t/alphajk)^(betajk-1))/((1+(t/alphajk)^betajk)^2*(1+(t/alphajl)^betajl))
 }
 
 

@@ -4,18 +4,21 @@
 \alias{f10j}
 \title{Title}
 \usage{
-f10j(alphaj, betaj, alphak, betak, t)
+f10j(alphajk, betajk, alphajl, betajl, t)
 }
 \arguments{
-\item{alphaj}{a scale parameter for transition 1->2.}
+\item{alphajk}{a scale parameter for transition j->k.}
 
-\item{betaj}{a shape parameter for transition 1->2.}
+\item{betajk}{a shape parameter for transition j->2k.}
 
-\item{alphak}{a scale parameter for transition 1->3.}
+\item{alphajl}{a scale parameter for transition j->l.}
 
-\item{betak}{a shape parameter for transition 1->3.}
+\item{betajl}{a shape parameter for transition j->l.}
 
 \item{t}{time to event where t>0.}
+}
+\value{
+a value of hazard
 }
 \description{
 Title

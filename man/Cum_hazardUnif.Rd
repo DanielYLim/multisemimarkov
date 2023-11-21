@@ -14,7 +14,7 @@ Cum_hazardUnif(a14, b14, t)
 \item{t}{time to event t}
 }
 \value{
-cumulative hazard function of uniform distribution
+a value of cumulative hazard using uniform distribution
 }
 \description{
 Cumulative Uniform Hazard

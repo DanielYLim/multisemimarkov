@@ -7,8 +7,14 @@
 log_like_func(p)
 }
 \arguments{
-\item{p}{}
+\item{p}{vector of parameters}
+}
+\value{
+a value of log-likelihood
 }
 \description{
 log-likelihood function without masked data
+}
+\examples{
+nlm(log_like_func, initial_value)
 }

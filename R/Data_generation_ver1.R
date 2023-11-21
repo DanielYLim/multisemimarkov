@@ -1,17 +1,22 @@
-#' Title
+#' Generate Data without masked cases
+#'
+#' Data Generation Algorithm for Unmasked Data
+#' Random samples of \eqn{\{(t_{1i}, t_{2i}, \delta_{12i}, \delta_{13i}, \delta_{23i}), i = 1, 2, \dots, n\} } can be obtained.
+#'
 #'
 #' @param n number of observations.
 #' @param alpha12 log-logstic scale parameter; 1->2 transition.
 #' @param beta12 log-logstic shape parameter; 1->2 transition.
 #' @param alpha13 log-logstic scale parameter; 1->3 transition.
 #' @param beta13 log-logstic shape parameter; 1->3 transition.
-#' @param lambda23 Weibull scale parameter; 2->3 transition.
-#' @param k23 Weibull shape parameter; 2->3 transition.
+#' @param alpha23 Weibull scale parameter; 2->3 transition.
+#' @param beta23 Weibull shape parameter; 2->3 transition.
 #' @param tau Kendall's tau; dependency measure
 #' @param p Probability of not-being cured.
 #' @param C_max Maximum value of censoring time.
-#'
-#' @return
+#' @param alpha04 Weibull scale parameter; cured -> 4 transition.
+#' @param beta04 Weibull shape parameter; cured -> 4 transition.
+#' @return A dataframe which contains generated data without masked data
 #' @export
 #'
 #' @examples

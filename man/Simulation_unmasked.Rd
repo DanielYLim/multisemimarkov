@@ -20,6 +20,33 @@ Simulation_unmasked(
   beta04 = 4
 )
 }
+\arguments{
+\item{B}{number of simulation runs}
+
+\item{n}{number of observations.}
+
+\item{alpha12}{log-logstic scale parameter; 1->2 transition.}
+
+\item{beta12}{log-logstic shape parameter; 1->2 transition.}
+
+\item{alpha13}{log-logstic scale parameter; 1->3 transition.}
+
+\item{beta13}{log-logstic shape parameter; 1->3 transition.}
+
+\item{alpha23}{Weibull scale parameter; 2->3 transition.}
+
+\item{beta23}{Weibull shape parameter; 2->3 transition.}
+
+\item{tau}{Kendall's tau; dependency measure}
+
+\item{p}{Probability of not-being cured.}
+
+\item{C_max}{Maximum value of censoring time.}
+
+\item{alpha04}{Weibull scale parameter; cured -> 4 transition.}
+
+\item{beta04}{Weibull shape parameter; cured -> 4 transition.}
+}
 \value{
 list of estimation outputs from 1:B
 }
@@ -27,7 +54,7 @@ list of estimation outputs from 1:B
 Simulation unmasked data
 }
 \examples{
-B=3
+B=5
 n=200
 alpha12 = 2
 beta12 = 4

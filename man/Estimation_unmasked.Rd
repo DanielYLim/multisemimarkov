@@ -19,6 +19,31 @@ Estimation_unmasked(
   beta04 = 4
 )
 }
+\arguments{
+\item{n}{number of observation}
+
+\item{alpha12}{log-logstic scale parameter; 1->2 transition.}
+
+\item{beta12}{log-logstic shape parameter; 1->2 transition.}
+
+\item{alpha13}{log-logstic scale parameter; 1->3 transition.}
+
+\item{beta13}{log-logstic shape parameter; 1->3 transition.}
+
+\item{alpha23}{Weibull scale parameter; 2->3 transition.}
+
+\item{beta23}{Weibull shape parameter; 2->3 transition.}
+
+\item{tau}{Kendall's tau; dependency measure}
+
+\item{p}{Probability of not-being cured.}
+
+\item{C_max}{Maximum value of censoring time.}
+
+\item{alpha04}{Weibull scale parameter; cured -> 4 transition.}
+
+\item{beta04}{Weibull shape parameter; cured -> 4 transition.}
+}
 \value{
 nlm output with some information of generated data
 }
@@ -40,5 +65,5 @@ C_max = 10
 alpha04 = 7
 beta04 = 4
 Result <- Estimation_unmasked(n, alpha12, beta12, alpha13, beta13, alpha23, beta23, tau, p, C_max, alpha04, beta04)
-print(Result)
+print(Result$estimate)
 }

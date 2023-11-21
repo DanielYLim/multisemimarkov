@@ -16,7 +16,7 @@ CIF(time, status12, status13, status14)
 \item{status14}{indicator history of 1->4 transition}
 }
 \value{
-Estimated Cumulative Incidence Function
+A data frame contains estimated cumulative incidence function
 }
 \description{
 Nonparametric Estimated Cumulative Incidence Function

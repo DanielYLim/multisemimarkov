@@ -14,7 +14,7 @@ hazardUnif(a14, b14, t)
 \item{t}{vector of quantiles.}
 }
 \value{
-hazard function of uniform distribution.
+a value of hazard using uniform distribution.
 }
 \description{
 Uniform Hazard Function
