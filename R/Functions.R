@@ -205,3 +205,16 @@ f10j<-function(alphajk, betajk, alphajl, betajl,t){
 
 
 
+cumF101 <- setRefClass("cumulative",
+                       fields = list(value = "numeric", alpha12 = "numeric", beta12 = "numeric", alpha13 = "numeric", beta13 = "numeric"),
+                       methods = list(
+                          integrate = function(x) {
+                           value <<- cubature::adaptIntegrate(Vectorize(f10j), lowerLimit=0, upperLimit=x, alphajk=alpha12, betajk=beta12, alphajl=alpha13, betajl=beta13)$integral
+                           return(value)
+                         }
+                       )
+)
+
+
+
+

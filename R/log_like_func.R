@@ -215,7 +215,7 @@ log.lik.fun.em.adapIntegrate<-function(p){
 
 #' Constructor function that creates a negative log-likelihood function with unmaksed data
 #'
-#' @param data ganerated data
+#' @param data generated data
 #' @param fixed parameters
 #'
 #' @return negative log-likelihood function
@@ -275,8 +275,8 @@ make.NegLogLik<-function(data, fixed = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALS
 
 
 
-        F101 <- cubature::adaptIntegrate(f10j, 0, t1[i], alphaj=alpha12, betaj=beta12, alphak=alpha13, betak=beta13)$integral
-        psi2 <- cubature::adaptIntegrate(f10j, 0, max_t1, alphaj=alpha12, betaj=beta12, alphak=alpha13, betak=beta13)$integral
+        F101 <- cubature::adaptIntegrate(f10j, 0, t1[i], alphajk=alpha12, betajk=beta12, alphajl=alpha13, betajl=beta13)$integral
+        psi2 <- cubature::adaptIntegrate(f10j, 0, max_t1, alphajk=alpha12, betajk=beta12, alphajl=alpha13, betajl=beta13)$integral
 
         s1 <- 1-F101/psi2
 
@@ -327,3 +327,176 @@ make.NegLogLik<-function(data, fixed = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALS
 
 
 
+#' Constructor function that creates a negative log-likelihood function with unmaksed data first stage
+#'
+#' @param data generated data
+#' @param fixed parameters
+#'
+#' @return negative log-likelihood function for first stage
+#' @export
+#'
+#' @examples
+#' B=10
+#' n=200
+#' alpha12 = 2
+#' beta12 = 4
+#' alpha13 = 3.5
+#' beta13 = 3
+#' alpha23 = 2.5
+#' beta23 = 1.5
+#' tau = 0.3
+#' p = 0.7
+#' C_max = 10
+#' alpha04 = 7
+#' beta04 = 4
+#' Data <- data_generation_ver1(n=n, alpha12 = alpha12, beta12 = beta12, alpha13 = alpha13, beta13 = beta13, alpha23 = alpha23, beta23 = beta23, tau = tau, p = p, C_max = C_max, alpha04 = alpha04, beta04 = beta04)
+#' nLL <- make.NegLogLik_first_stage(Data)
+#' initial_parms <- c(alpha12, beta12, alpha13, beta13, p)
+#' nlm(nLL, initial_parms)$estimate
+make.NegLogLik_first_stage<-function(data, fixed = c(FALSE, FALSE, FALSE, FALSE, FALSE)){
+
+  params <- fixed
+
+  function(p){
+    ### M=1
+    alpha12=p[1]
+    beta12=p[2]
+
+
+    #### M=2
+    alpha13=p[3]
+    beta13=p[4]
+
+
+    ### proportion
+    prop <- p[5]
+
+
+
+    n <- length(data$t1)
+    t1 <- data$t1
+    t2 <- data$t2
+    status12 = data$status12
+    status13 = data$status13
+    status23 = data$status23
+    n  = length(t1)
+
+    max_t1 <- max(t1)
+
+    answer=0
+    for (i in 1:n){
+      if (status12[i]==1){
+
+        f101<-f10j(alpha12, beta12, alpha13, beta13, t1[i])
+
+
+      }else if(status13[i]==1){
+        f102<-f10j(alpha13, beta13, alpha12, beta12, t1[i])
+      }else if((status12[i]==0)&(status13[i]==0)){
+
+        S10<-((1+(t1[i]/alpha12)^(beta12))^(-1)) * ((1+(t1[i]/alpha13)^(beta13))^(-1))
+
+
+      }
+      if ((status12[i]==1)){answer <- answer-log(prop)-log(f101)}
+      if (status13[i]==1){answer=answer-log(prop)-log(f102)}
+      if ((status12[i]==0)&(status13[i]==0)){answer=answer-log(prop*S10+(1-prop))}
+
+    }
+    return(answer)
+
+  }
+}
+
+
+
+#' Constructor function that creates a negative log-likelihood function with unmaksed data second stage
+#'
+#' @param data generated data
+#' @param fixed parameters
+#'
+#' @return negative log-likelihood function for second stage
+#' @export
+#'
+#' @examples
+#' Data <- data_generation_ver1(n=n, alpha12 = alpha12, beta12 = beta12, alpha13 = alpha13, beta13 = beta13, alpha23 = alpha23, beta23 = beta23, tau = tau, p = p, C_max = C_max, alpha04 = alpha04, beta04 = beta04)
+#' nLL <- make.NegLogLik_first_stage(Data)
+#' initial_parms <- c(alpha12, beta12, alpha13, beta13, p)
+#' estimates <- nlm(nLL, initial_parms)$estimate
+#' alpha12hat = estimates[1]
+#' beta12hat = estimates[2]
+#' alpha13hat = estimates[3]
+#' beta13hat = estimates[4]
+#' cumF101_hat <- cumF101$new(alpha12 = alpha12hat, beta12 = beta12hat, alpha13 = alpha13hat, beta13=beta13hat)
+#' t1 <- Data$t1
+#' F101_hat <- sapply(t1, cumF101_hat$integrate)
+#' F101.star.hat.new <- F101_hat
+#' pi1<-hazardLL(alpha12hat,beta12hat,t1)/(hazardLL(alpha12hat,beta12hat,t1)+hazardLL(alpha13hat,beta13hat,t1))
+#' for (i in 1:length(F101_hat)){
+#'F101.star.hat.new[i]=F101_hat[i]/pi1[i]
+#'}
+#' Data$F101.star.hat <-F101.star.hat.new
+#' nLL2 <- make.NegLogLik_second_stage(Data)
+#' phi <- 2/(1-tau)-2 # parameter of the Clayton copula
+#' initial_parms <- c(0.7,1.5,0.8)
+#' estimates2<-nlm(nLL2, initial_parms)$estimate
+#' print(estimates)
+#' print(estimates2)
+make.NegLogLik_second_stage<-function(data, fixed = c(FALSE, FALSE, FALSE)){
+
+  params <- fixed
+
+  function(p){
+    # 2 -> 3
+    params[!fixed] <- p
+    alpha23 <- params[1]
+    beta23 <- params[2]
+    phi <- params[3]
+
+    n <- length(data$t1)
+    t1 <- data$t1
+    t2 <- data$t2
+    status12 = data$status12
+    status13 = data$status13
+    status23 = data$status23
+    n  = length(t1)
+    F101.star.hat.new <- data$F101.star.hat
+
+    answer <- 0
+    for (i in 1:n)
+    {
+
+      if (status12[i]==1)
+      {
+
+        s2 <- exp(-(t2[i]/alpha23)^beta23)
+        f2 <-1-s2
+
+        fun <- ((F101.star.hat.new[i])**(-phi)-1)+((1-s2)**(-phi)-1)
+
+        joints <- (fun+1)**(-1/phi)   ### Copula
+
+        d1.joints <- (fun+1)**(-1/phi-1)*(F101.star.hat.new[i])**(-phi-1)
+
+        if (status23[i]==1)
+        {
+          ds2 <- -beta23*(t2[i]^(beta23-1)/alpha23^beta23)*exp(-(t2[i]/alpha23)^beta23)
+
+          dd.joints <- F101.star.hat.new[i]^(-phi-1)*f2^(-phi-1)*(fun+1)**(-1/phi-2)*(1+phi)*(ds2)
+
+        }
+      }
+
+
+
+      if ((status12[i]==1)&(status23[i]==1)) {answer <- answer-log(dd.joints)}
+      if ((status12[i]==1)&(status23[i]==0)) {answer <- answer-log(1-d1.joints)}
+
+
+
+    }
+
+    return(answer)
+
+  }
+}

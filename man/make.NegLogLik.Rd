@@ -10,7 +10,7 @@ make.NegLogLik(
 )
 }
 \arguments{
-\item{data}{ganerated data}
+\item{data}{generated data}
 
 \item{fixed}{parameters}
 }
