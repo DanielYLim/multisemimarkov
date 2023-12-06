@@ -226,7 +226,8 @@ log.lik.fun.em.adapIntegrate<-function(p){
 #' nLL <- make.NegLogLik(Data)
 #' phi <- 2/(1-tau)-2 # parameter of the Clayton copula
 #' initial_parms <- c(alpha12, beta12, alpha13, beta13, alpha23, beta23, phi, p)
-#' nlm(nLL, initial_parms)$estimate
+#' estimates <- nlm(nLL, initial_parms)$estimate
+#' print(estimates)
 make.NegLogLik<-function(data, fixed = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)){
 
   params <- fixed
@@ -420,6 +421,15 @@ make.NegLogLik_first_stage<-function(data, fixed = c(FALSE, FALSE, FALSE, FALSE,
 #'
 #' @examples
 #' Data <- data_generation_ver1(n=n, alpha12 = alpha12, beta12 = beta12, alpha13 = alpha13, beta13 = beta13, alpha23 = alpha23, beta23 = beta23, tau = tau, p = p, C_max = C_max, alpha04 = alpha04, beta04 = beta04)
+#' cumF101 <- setRefClass("cumulative",
+#' fields = list(value = "numeric", alpha12 = "numeric", beta12 = "numeric", alpha13 = "numeric", beta13 = "numeric"),
+#' methods = list(
+#'   integrate = function(x) {
+#'     value <<- cubature::adaptIntegrate(Vectorize(f10j), lowerLimit=0, upperLimit=x, alphajk=alpha12, betajk=beta12, alphajl=alpha13, betajl=beta13)$integral
+#'     return(value)
+#'   }
+#' )
+#' )
 #' nLL <- make.NegLogLik_first_stage(Data)
 #' initial_parms <- c(alpha12, beta12, alpha13, beta13, p)
 #' estimates <- nlm(nLL, initial_parms)$estimate
@@ -438,7 +448,7 @@ make.NegLogLik_first_stage<-function(data, fixed = c(FALSE, FALSE, FALSE, FALSE,
 #' Data$F101.star.hat <-F101.star.hat.new
 #' nLL2 <- make.NegLogLik_second_stage(Data)
 #' phi <- 2/(1-tau)-2 # parameter of the Clayton copula
-#' initial_parms <- c(0.7,1.5,0.8)
+#' initial_parms <- c(0.7,1.3,0.8)
 #' estimates2<-nlm(nLL2, initial_parms)$estimate
 #' print(estimates)
 #' print(estimates2)
@@ -448,7 +458,7 @@ make.NegLogLik_second_stage<-function(data, fixed = c(FALSE, FALSE, FALSE)){
 
   function(p){
     # 2 -> 3
-    params[!fixed] <- p
+    # params[!fixed] <- p
     alpha23 <- params[1]
     beta23 <- params[2]
     phi <- params[3]
@@ -489,7 +499,7 @@ make.NegLogLik_second_stage<-function(data, fixed = c(FALSE, FALSE, FALSE)){
 
 
 
-      if ((status12[i]==1)&(status23[i]==1)) {answer <- answer-log(dd.joints)}
+      if ((status12[i]==1)&(status23[i]==1)) {answer <- answer-log(dd.joints+0.001)}
       if ((status12[i]==1)&(status23[i]==0)) {answer <- answer-log(1-d1.joints)}
 
 
@@ -500,3 +510,98 @@ make.NegLogLik_second_stage<-function(data, fixed = c(FALSE, FALSE, FALSE)){
 
   }
 }
+
+
+
+
+#' Title
+#'
+#' @param p parameters of 2->3 and clayton copula
+#'
+#' @return negative loglikehood values
+#' @export
+#'
+#' @examples
+#'
+#' f101<-sapply(t1, f10j, alphajk=alpha12hat, betajk=beta12hat, alphajl=alpha13hat, betajl=beta13hat)
+#f101<-f10j(alpha1hat, beta1hat, alpha2hat, beta2hat, x1[i])
+#' cumF101<-function(t)
+#'{
+#'  return=cubature::adaptIntegrate(f10j, lowerLimit=0, upperLimit=t, alphajk=alpha12hat, betajk=beta12hat, alphajl=alpha13hat, betajl=beta13hat)$integral
+#'}
+#'
+#' F101<-sapply(t1,cumF101)
+#'F101.star.hat.new=F101
+#'pi1<-rep(0,length(F101))
+#'
+#'for (i in 1:n){
+  #'  pi1[i]<-cubature::adaptIntegrate(f10j, lowerLimit=0, upperLimit=t1[i], alphajk=alpha12hat, betajk=beta12hat, alphajl=alpha13hat, betajl=beta13hat)$integral
+  #'}
+#'
+#' for (i in 1:length(F101)){
+#'  F101.star.hat.new[i]=F101[i]/pi1[i]
+#' }
+#' status12 <- Data$status12
+#' status23 <- Data$status12
+#' F101.star.hat.new <- Data$F101.star.hat
+#' t2 <- Data$t2
+#' results2 <- nlm(log.lik.clayton.np,c(0.7,1.3,0.8))
+#' print(results2)
+log_lik_second_stage <- function(p)
+{
+
+  ### M=3
+  alpha23=p[1]
+  beta23=p[2]
+
+
+
+  ### parameter for Clayton Copula
+  phi <- p[3]
+
+
+  n=length(status12)
+  answer <- 0
+  for (i in 1:n)
+  {
+
+    if (status12[i]==1)
+    {
+
+
+
+
+
+
+      s2 <- exp(-(t2[i]/alpha23)^beta23)
+      f2 <-1-s2
+
+      fun <- ((F101.star.hat.new[i])**(-phi)-1)+((1-s2)**(-phi)-1)
+
+      joints <- (fun+1)**(-1/phi)   ### Copula
+
+      d1.joints <- (fun+1)**(-1/phi-1)*(F101.star.hat.new[i])**(-phi-1)
+
+      if (status23[i]==1)
+      {
+        ds2 <- beta23*(t2[i]^(beta23-1)/alpha23^beta23)*exp(-(t2[i]/alpha23)^beta23)
+
+        dd.joints <- F101.star.hat.new[i]^(-phi-1)*f2^(-phi-1)*(fun+1)**(-1/phi-2)*(1+phi)*(ds2)
+
+
+      }
+    }
+
+
+
+    if ((status12[i]==1)&(status23[i]==1)) {answer <- answer-log(dd.joints)}
+    if ((status12[i]==1)&(status23[i]==0)) {answer <- answer-log(1-d1.joints)}
+
+
+
+  }
+  answer
+}
+
+
+
